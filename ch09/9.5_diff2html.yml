@@ -1,0 +1,24 @@
+---
+- name: Run compare.py
+  hosts: localhost
+  become: false  # Set to false if elevated permissions are not needed
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Ensure compare.py is executable
+      ansible.builtin.file:
+        path: ./compare.py
+        mode: '0755'  # Ensure the script is executable
+        state: file
+
+    - name: Run compare.py
+      ansible.builtin.command:
+        cmd: python3 ./compare.py
+      register: result  # Capture the result of the command
+      ignore_errors: yes  # Optional: Continue even if the script fails
+
+    - name: Print script output
+      ansible.builtin.debug:
+        msg: "{{ result.stdout }}"
+      when: result is defined and result.stdout != ""
