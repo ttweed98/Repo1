@@ -1,0 +1,20 @@
+---
+- hosts: all
+  become: true
+
+
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Dragonball package
+      ansible.builtin.apt:
+        name: dragonball
+        state: present
+
+    - name: Ensure Dragonball service is running
+      ansible.builtin.service:
+        name: dragonball
+        state: started
+        enabled: yes

@@ -1,0 +1,30 @@
+---
+- name: Install useful Linux tools
+  hosts: all
+  become: true
+  pre_tasks:
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Install updates (ubuntu)
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+    
+    - name: Install updates (Fedora)
+      dnf:
+        update_only: yes 
+        update_cache: yes 
+      when: ansible_distribution == "Fedora"
+
+- name: Install useful Linux tools
+  hosts: file_server
+  become: true
+
+  tasks:
+    - name: Install htop, nmon, iftop packages
+      package:
+        name: ['htop', 'nmon', 'iftop']
+        state: latest

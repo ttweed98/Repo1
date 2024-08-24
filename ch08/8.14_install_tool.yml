@@ -1,0 +1,11 @@
+---
+- name: Install useful Linux tools
+  hosts: file_server, web_server
+  become: true
+
+  tasks:
+    - name: Install htop, nmon, and iftop packages
+      ansible.builtin.package:
+        name: ['htop', 'nmon', 'iftop']
+        state: latest
+        update_cache: yes

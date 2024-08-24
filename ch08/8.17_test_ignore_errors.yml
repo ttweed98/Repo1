@@ -1,0 +1,14 @@
+---
+- name: Test playbook for ignore_errors
+  hosts: all
+  gather_facts: false 
+  become: true 
+
+  tasks:
+    - name: Faling Task
+      ansible.builtin.command: cat /bin/DodgyApp
+      ignore_errors: yes
+    
+    - name: Non-Failing task
+      debug:
+        msg: "Work hard, Play hard, and always keep at school!"

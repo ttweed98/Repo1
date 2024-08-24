@@ -1,0 +1,20 @@
+---
+- name: Revice Fedora Services
+  hosts: db_server
+  become: true
+  collections:
+    - ansible.builtin
+  
+  tasks:
+    - name: Checking service status
+      ansible.builtin.command:
+        cmd: systemctl "{{ item }}"
+      with_items:
+        - sshd
+      when: ansible_distribution == "Fedora"
+      register: service_status
+      ignore_errors: yes
+
+    - name: Display service state messages
+      debug:
+        var: service_state

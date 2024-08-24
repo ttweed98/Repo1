@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: true 
+  gather_facts: false
+
+  tasks:
+    - name: Update repository index
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Remove Apache2 package
+      ansible.builtin.apt:
+        name: apache2
+        state: absent
+
+    - name: Remove php support for apache2
+      ansible.builtin.apt:
+        name: libapache2-mod-php
+        state: absent
+
+    - name: Ensure Apache2 service is running
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: yes

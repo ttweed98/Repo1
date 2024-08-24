@@ -1,0 +1,34 @@
+---
+- name: Install and enable Samba on Fedora and create a Samba user account
+  hosts: file_server
+  become: true 
+  collections:
+    - community.general
+  
+  tasks:
+    - name: Install Samba packages
+      ansible.builtin.dnf:
+        name: [samba, samba-client]
+        state: present
+    
+    - name: Enable Samba service
+      ansible.builtin.systemd:
+        name: smb
+        state: started
+        enabled: yes 
+    
+    - name: Ensure sambashare group exists
+      ansible.builtin.group:
+        name: sambashare
+        state: present
+    
+    - name: Create Samba user account
+      ansible.builtin.user:
+        name: sambajdoe
+        password: "{{ 'T0rrpedo' | password_hash('sha512_crypt', 'SaltyFish') }}"
+        shell: /sbin/nologin
+        groups: sambashare
+        append: yes 
+    
+    - name: Add sambajdoe to smbpasswd file
+      ansible.builtin.command: echo -ne "T0rrpedo\nT0rrpedo\n" | smbpasswd -a -s sambajdoe

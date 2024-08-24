@@ -1,0 +1,32 @@
+---
+- name: Updating Fedora Servers
+  hosts: all
+  become: true 
+  collections: 
+    - ansible.builtin
+
+  tasks:
+
+    - name: Install packages on Linux
+      ansible.builtin.package:
+        name:
+          - "{{ apache_package }}"
+          - "{{ php_package }}"
+          - "{{ tmux_package }}"
+          - "{{ tree_package }}"
+        state: absent
+        update_cache: yes
+
+    - name: Ensure Apache2 service is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      when: ansible_distribution=='Ubuntu'
+
+    - name: Ensure httpd service is running
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: ansible_distribution=='Fedora'

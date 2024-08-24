@@ -1,0 +1,28 @@
+---
+- name: Manage MariaDB Package on DB Servers
+  hosts: db_server
+  become: true
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Ensure MariaDB service is started on Fedora
+      ansible.builtin.service:
+        name: mariadb
+        state: started
+        enabled: true
+      when: ansible_facts['distribution'] == "Fedora"
+
+    - name: Ensure MariaDB service is started on Ubuntu
+      ansible.builtin.service:
+        name: mariadb
+        state: started
+        enabled: true
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Debug the status of the MariaDB service
+      ansible.builtin.debug:
+        var: ansible_facts.services['mariadb.service'].state
