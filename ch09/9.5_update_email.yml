@@ -1,0 +1,22 @@
+---
+- name: Update Admin email
+  hosts: fedora
+  become: true
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Change email address for httpd admin
+      tags: apache, fedora, httpd
+      ansible.builtin.lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^ServerAdmin'
+        line: 'ServerAdmin jdoe@ansnetauto.com' 
+      register: httpd
+
+    - name: Restart httpd if the configuration was changed
+      tags: apache, fedora, httpd
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+      when: httpd.changed

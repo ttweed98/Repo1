@@ -1,0 +1,14 @@
+---
+- name: Copy httpd.conf file from Fedora to a local directory
+  hosts: fedora
+  gather_facts: false  
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Copy httpd.conf file
+      ansible.builtin.fetch:
+        src: /etc/httpd/conf/httpd.conf
+        dest: ./httpd.conf  
+        flat: yes
+
