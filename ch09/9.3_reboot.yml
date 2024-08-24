@@ -1,0 +1,14 @@
+---
+- name: Reboot Web Services
+  hosts: fedora
+  become: yes
+  gather_facts: false
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Reboot Fedora Server
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+        test_command: uptime
+        connect_timeout: 60

@@ -1,0 +1,24 @@
+---
+- name: Check httpd status
+  hosts: fedora
+  become: true
+  gather_facts: false  # Set to true if you need system facts for other tasks
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Ensure httpd service is started
+      ansible.builtin.systemd:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Run systemctl status command and store output in a variable
+      ansible.builtin.command:
+        cmd: systemctl status httpd
+      register: apache_status_output
+
+    - name: Print httpd status
+      ansible.builtin.debug:
+        msg: "{{ apache_status_output.stdout_lines }}"
+

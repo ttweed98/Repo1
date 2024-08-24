@@ -1,0 +1,17 @@
+---
+- name: Verify files were uploaded
+  hosts: all
+  become: true
+  gather_facts: false
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Get contents of a file
+      ansible.builtin.slurp:
+        src: /var/www/html/index.html
+      register: file_content
+
+    - name: View the file contents
+      ansible.builtin.debug:
+        msg: "{{ (file_content['content'] | b64decode).split('\n') }}"

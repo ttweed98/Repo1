@@ -1,0 +1,66 @@
+---
+- name: Add Updates to Playbook
+  hosts: all
+  become: true
+  collections:
+    - ansible.builtin
+
+  tasks:
+    - name: Install updates (Ubuntu)
+      tags: always
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_facts['distribution'] == "Ubuntu"
+    
+    - name: Install updates (Fedora)
+      tags: always
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+        update_cache: yes
+      when: ansible_facts['distribution'] == "Fedora"
+
+- name: Install Apache and HTTPD Services
+  hosts: linux
+  become: true
+
+  tasks:
+    - name: Install apache2 & PHP packages for Ubuntu
+      tags: ubuntu,apache
+      ansible.builtin.apt:
+        name:
+          - apache2
+          - libapache2-mod-php
+        state: latest
+      when: ansible_facts['distribution'] == "Ubuntu"
+    
+    - name: Install httpd & PHP packages for Fedora/CentOS
+      tags: fedora,httpd
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - php
+        state: latest
+      when: ansible_facts['distribution'] == "Fedora"
+
+    - name: Copy default HTML file to web servers
+      tags: apache,httpd
+      ansible.builtin.copy:
+        src: default_site.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: '0644'
+
+- name: Restart Web Services
+  hosts: fedora
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Restart HTTPD service
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+  
