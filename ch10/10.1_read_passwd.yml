@@ -1,0 +1,16 @@
+---
+- name: Read password file and display last three lines
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Read file content
+      ansible.builtin.command:
+        cmd: cat /etc/passwd
+      register: file_output
+    
+    - name: View the last three lines of the file
+      ansible.builtin.debug:
+        msg: "{{ file_output.stdout_lines[-3:] }}"
+      when: file_output.stdout_lines | length >= 3  

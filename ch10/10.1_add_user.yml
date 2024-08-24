@@ -1,0 +1,12 @@
+---
+  - name: Add new user
+    hosts: all
+    become: true 
+    gather_facts: false 
+
+    tasks:
+      - name: create a new user
+        ansible.builtin.user:
+          name: jsmith
+          group: root
+          
