@@ -1,0 +1,25 @@
+---
+- name: Run ls -l /etc/sudoers.d command and output to screen
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure /etc/sudoers.d directory exists
+      ansible.builtin.stat:
+        path: /etc/sudoers.d
+      register: sudoers_dir
+
+    - name: Run ls -l /etc/sudoers.d command
+      ansible.builtin.shell: ls -l /etc/sudoers.d
+      register: sudoers_output
+      when: sudoers_dir.stat.exists
+
+    - name: Output result to screen
+      ansible.builtin.debug:
+        msg: "Output of 'ls -l /etc/sudoers.d':\n{{ sudoers_output.stdout_lines }}"
+      when: sudoers_dir.stat.exists
+
+    - name: Handle case where /etc/sudoers.d does not exist
+      ansible.builtin.debug:
+        msg: "/etc/sudoers.d directory does not exist."
+      when: not sudoers_dir.stat.exists

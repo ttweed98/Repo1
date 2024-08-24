@@ -1,0 +1,47 @@
+---
+- name: Update Servers
+  hosts: all
+  become: true 
+
+  pre_tasks:
+    - name: Install updates (Ubuntu)
+      tags: always
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: yes 
+      when: ansible_distribution == "Ubuntu"
+    
+    - name: Install updates (Fedora)
+      tags: always
+      ansible.builtin.dnf:
+        update_only: yes 
+        update_cache: yes 
+      when: ansible_distribution == "Fedora"
+
+- name: Create new User
+  hosts: all
+  become: true 
+
+  tasks:
+    - name: Create a new user - jsmith
+      tags: always
+      ansible.builtin.user:
+        name: jsmith
+        group: root  # Corrected from 'groups' to 'group'
+    
+    - name: Add SSH key for jsmith
+      tags: always
+      ansible.posix.authorized_key:
+        user: jsmith
+        key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCjTFIWgh8YLPhjiE2e+bIxUhiZeBB/+/tulNtXW8w986whRq4USpaBPfwbwP+BH0v6KDZ/RIDsqioUSNFGeKVsaBFsOWAQ26sgWb/njWyQnQ3tcFj2KF4tFijhUb8xRQRvRCUQ02a2PNO4DAtVagbTdRn+d3Q4P0tVzjFqW+vSZnzoB0fTbSwxqqyhkyiL4Jc0xkuWr5HsAbuPFLlrVJiikTR/q/1vRWVjj6tPugtmeVjHnzSGBZf3+E/B7amBCbTPajhkfTSAPI40Kom4ioo12ACGoQCQj7kSRK0khhIgaiLwqa1oV1fzgOgDfgxxTvsXN2v7BhpN0Wi5cFXQOj3lwUBEeZpXNxPBtvKtZSXktQjiPP5O2jckypw/6H8cXCcYVcu4lSZc6sD4zXRQjznhOTukcW7RFf2xrmbw0qC3ZHcj8VH1IdnPxEm0Y9h8qJiiHGuTJWX/C4s/TWGJlVB0ilpbjjJR2U5sieJ48XjL+J+iMOffuHiaLJ7hpQnNoHZuVOtI2PqM9QAqkhhNjvko0wmrAyJrZlVmZCkJ05JcsthYG+OyWD1SbODgx54TNM72BI9rzEyNX1McBA5qHeoxE7G5Ufe1PqaHeRyk8fidaJnTrmbES8jrKLh8Z6v87WlYeuWSmt1kk5u3o0xYZrwqyaH4sZFRIqtgsdgmVIOAsQ== jdoe@f38s1
+    
+    - name: Add sudoers file for jsmith
+      tags: always
+      ansible.builtin.copy:
+        src: sudoer_jsmith
+        dest: /etc/sudoers.d/jsmith
+        owner: root
+        group: root
+        mode: '0440'  # Corrected mode to string
+
+

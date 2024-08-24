@@ -1,0 +1,13 @@
+---
+- name: Install software after initial bootstrap
+  hosts: all
+  become: true 
+
+  tasks:
+    - name: install packages
+      ansible.builtin.package:
+        state: latest
+        name:
+          - nmap 
+          - vsftpd
+      when: ansible_distribution in ["Fedora", "Ubuntu"]

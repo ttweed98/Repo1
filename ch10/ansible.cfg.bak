@@ -5,4 +5,3 @@ deprecation_warnings=False
 nocows = True
 # cow_selection = random
 forks=30
-remote_user = jsmith
