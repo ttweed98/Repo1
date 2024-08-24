@@ -1,0 +1,22 @@
+---
+- name: Install and run neofetch command
+  hosts: all
+  gather_facts: false 
+  become: true 
+
+  tasks:
+    - name: Install neofetch package
+      package:
+        name: neofetch
+        state: present
+    
+    - name: Run neofetch command and save output
+      ansible.builtin.shell: neofetch
+      register: neofetch_output
+      delegate_to: "{{ inventory_hostname }}"
+    
+    - name: Save neofetch output to file on Control Machine
+      ansible.builtin.copy:
+        content: "{{ neofetch_output.stdout }}"
+        dest: "./neofetch_output_{{ inventory_hostname }}.txt"
+      delegate_to: localhost
