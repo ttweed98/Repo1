@@ -1,0 +1,40 @@
+---
+- name: Install httpd and PHP packages
+  ansible.builtin.package:
+    name: 
+      - "{{ 'apache2' if ansible_distribution == 'Ubuntu' else 'httpd' }}"
+      - "{{ 'libapache2-mod-php' if ansible_distribution == 'Ubuntu' else 'php' }}"
+    state: latest
+  tags: [apache, httpd, fedora]
+
+- name: Start https for Fedora
+  tags: [apache, httpd, fedora]
+  ansible.builtin.service:
+    name: "{{ 'httpd' if ansible_distribtion == 'Fedora' else omit }}"
+    state: started
+    enabled: yes 
+  when: ansbile_distribution == 'Fedora'
+
+- name: Change Email address for httpd admin
+  tags: [apache, httpd, fedora]
+  ansible.builtin.lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^ServerAdmin'
+    line: ServerAdmin admin@ansnetauto.com
+  when: ansible_distribtuion == "Fedora"
+
+- name: Restart httpd for Fedora
+  tags: [apache, httpd, fedora]
+  ansible.builtin,service:
+    name: httpd
+    state: restarted
+  when: httpd.changed
+
+- name: Copy default html file from site
+  tags: [apache, httpd, apache2]
+  ansible.builtin.copy:
+    src: default_site.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: '0644'
