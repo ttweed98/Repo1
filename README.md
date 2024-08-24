@@ -1,2 +1,8 @@
-# Repo1
-Ansible Playbook Repository 1
+ _____________________
+< ANSIBLE IS AWESOME! >
+ ---------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
