@@ -3,13 +3,10 @@
 - name: Install httpd and PHP packages
   ansible.builtin.package:
     name:
-      - "{{ 'apache2' if ansible_distribution == 'Ubuntu' else 'httpd' }}"
-      - "{{ 'libapache2-mod-php' if ansible_distribution == 'Ubuntu' else 'php' }}"
+      - "{{ http_package_name }}"
+      - "{{ php_package_name }}"
     state: latest
-  tags:
-    - apache
-    - httpd
-    - php
+  tags: [apache, httpd, ubuntu, fedora]
 
 - name: Start httpd service for Fedora
   ansible.builtin.service:

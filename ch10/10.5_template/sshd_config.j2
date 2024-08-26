@@ -1,0 +1,21 @@
+# Original settings
+
+Include /etc/ssh/sshd_config.d/*.conf 
+
+AuthorizedKeysFile .ssh/authorized_keys
+
+Subsystem sftp /usr/libexec/openssh/sftp-server
+
+### ADDED BY Network Automation ADMIN ###
+
+Match User {{sftp_user}}
+
+ForceCommand internal-sftp 
+PasswordAuthentication yes
+
+ChRootDirectory {{sftp_dir}}
+
+PermitTunnel no 
+AllowAgentForwarding no 
+AllowTcpForwarding no 
+X11Forwarding no 
