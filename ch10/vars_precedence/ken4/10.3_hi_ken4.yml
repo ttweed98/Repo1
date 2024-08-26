@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  gather_facts: false 
+  tasks:
+    - block:
+      - name: Set my_variable within the block
+        ansible.builtin.set_fact:
+          my_variable: 'Barbie'
+      always:
+        - name: Print HI, Ken!
+          ansible.builtin.debug:
+            msg: "Hi, {{ my_variable | default('Ken') }}!"

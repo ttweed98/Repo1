@@ -1,0 +1,43 @@
+---
+- name: Provision Roles
+  hosts: all
+  become: true 
+
+  pre_tasks:
+    - name: Install updates on Ubuntu
+      tags: always
+      ansible.builtin.apt:
+        update_cache: yes
+      changed_when: false 
+      when: ansible_distribution == "Ubuntu"
+    
+    - name: Install updates on Fedora
+      tags: always 
+      ansible.builtin.dnf:
+        update_cache: yes 
+      changed_when: false 
+      when: ansible_distribution == "Fedora"
+
+- name: Apply Base Role
+  hosts: all
+  become: true 
+  roles:
+    - base
+
+- name: Apply Database Server Role
+  hosts: db_servers
+  become: true 
+  roles:
+    - db_servers 
+
+- name: Apply File Server Role
+  hosts: file_servers
+  become: true 
+  roles:
+    - file_servers
+
+- name: Apply Web Server Role
+  hosts: web_servers
+  become: true 
+  roles: 
+    - web_servers

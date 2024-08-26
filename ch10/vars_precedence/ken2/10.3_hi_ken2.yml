@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  gather_facts: false 
+  roles:
+    - my_role
+  
+  tasks:
+    - name: Print Hi, Ken!
+      ansible.builtin.debug:
+        msg: "Hi, {{ my_variable | default('Ken') }}!"

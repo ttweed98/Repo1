@@ -1,0 +1,7 @@
+---
+- hosts: my_hosts
+  gather_facts: false 
+  tasks:
+    - name: Print Hi, Ken!
+      ansible.builtin.debug:
+        msg: "Hi, {{my_variable | default ('Ken') }}!"

@@ -1,0 +1,6 @@
+- hosts: localhost
+  gather_facts: false 
+  tasks:
+    - name: Print Hi, Ken!
+      debug:
+        msg: "Hello, {{my_variable | default ('Ken') }}!"

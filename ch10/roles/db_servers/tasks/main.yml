@@ -1,6 +1,6 @@
 ---
 - name: Install Mariadb package
   ansible.builtin.package:
-    name: "{{ 'mariadb-server' if ansible_distribution == 'Ubuntu' else 'mariabd'}}"
+    name: "{{ 'mariadb-server' if ansible_distribution == 'Ubuntu' else 'mariadb'}}"
     state: latest
   tags: always
