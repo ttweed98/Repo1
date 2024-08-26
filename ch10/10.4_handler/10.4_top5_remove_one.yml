@@ -1,0 +1,21 @@
+---
+- hosts: f38c1
+  become: true 
+  vars: 
+    file_path: "./top5.txt"
+  
+  tasks:
+    - name: Remove the first line from the file
+      ansible.builtin.shell: |
+        tail -n +2 {{ file_path }} > {{ file_path }}.tmp && mv {{ file_path }}.tmp {{ file_path }}
+      args:
+        executable: /bin/bash
+    
+    - name: Read file
+      register: file_contents
+      ansible.builtin.shell: cat {{ file_path }}
+      check_mode: no 
+    
+    - name: Display file contents
+      ansible.builtin.debug:
+        var: file_contents.stdout_lines

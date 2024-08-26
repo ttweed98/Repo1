@@ -1,0 +1,36 @@
+---
+- hosts: f38c1
+  become: true 
+  gather_facts: false 
+
+  vars: 
+    file_path: "./top5.txt"
+    file_contents: |
+      London
+      Paris
+      New York
+      Sydney
+      Tokyo
+  
+  tasks:
+    - name: Check if the file exists
+      ansible.builtin.stat:
+        path: "{{ file_path }}"
+      register: file_info
+    
+    - name: Create the file if it does not exist
+      ansible.builtin.file:
+        path: "{{ file_path }}"
+        state: touch
+        mode: '0666'
+      when: not file_info.stat.exists
+    
+    - name: Ensure the file has specific contents
+      ansible.builtin.copy:
+        dest: "{{ file_path }}"
+        content: "{{ file_contents }}"
+      notify: file_changed 
+    
+  handlers:
+    - name: file_changed
+      ansible.builtin.command: echo "Your file has been changed!"
