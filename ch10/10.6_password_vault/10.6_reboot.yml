@@ -1,0 +1,13 @@
+- name: Reboot All Servers
+  hosts: all
+  become: yes 
+  become_method: sudo
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Reboot All Nodes
+      ansible.builtin.reboot:
+        reboot_timeout: 600  # Timeout in seconds
+        test_command: uptime
